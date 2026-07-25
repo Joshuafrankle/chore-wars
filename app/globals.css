@@ -1,26 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* Hallway: page background. Doorframe: card/surface. Ink: text. */
+  --color-hallway: #f1ece4;
+  --color-doorframe: #ffffff;
+  --color-ink: #241f1a;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brass: primary accent (CTAs, focus). Spruce: fairness/completion.
+     Tally: money/bills. Overdue: attention badges only. */
+  --color-brass: #b4802e;
+  --color-spruce: #2f6b4f;
+  --color-tally: #3a6c8c;
+  --color-overdue: #b14a4a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-hallway: #1c1a17;
+    --color-doorframe: #26221d;
+    --color-ink: #f3ece3;
+
+    --color-brass: #d9a354;
+    --color-spruce: #57a97d;
+    --color-tally: #7fb2ce;
+    --color-overdue: #e08787;
   }
 }
 
+@theme inline {
+  --color-hallway: var(--color-hallway);
+  --color-doorframe: var(--color-doorframe);
+  --color-ink: var(--color-ink);
+  --color-brass: var(--color-brass);
+  --color-spruce: var(--color-spruce);
+  --color-tally: var(--color-tally);
+  --color-overdue: var(--color-overdue);
+
+  --font-display: var(--font-space-grotesk);
+  --font-body: var(--font-work-sans);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-hallway);
+  color: var(--color-ink);
+  font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
