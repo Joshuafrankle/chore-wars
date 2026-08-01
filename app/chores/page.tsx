@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { requireHouseholdMember } from "@/lib/auth";
 
 type ChoreListItem = {
@@ -34,19 +33,12 @@ export default async function ChoresPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
-      <div className="flex items-center justify-between">
-        <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Chores</h1>
-        <Link
-          href="/chores/new"
-          className="rounded-xl bg-brass px-4 py-2 text-sm font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
-        >
-          Add a chore
-        </Link>
-      </div>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Chores</h1>
 
       {!chores?.length ? (
         <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
-          No chores yet. Add the first one so everyone knows what&apos;s next.
+          Nothing set up yet — kitchen, bathroom, and common area duty appear here as soon as
+          your household has members.
         </p>
       ) : (
         <ul className="flex flex-col gap-3">

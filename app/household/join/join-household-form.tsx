@@ -1,12 +1,12 @@
 "use client";
 
 import { useActionState } from "react";
-import { joinHousehold, type ActionState } from "../actions";
+import { findHouseholdByCode, type ActionState } from "../actions";
 
 const initialState: ActionState = {};
 
 export function JoinHouseholdForm() {
-  const [state, formAction, pending] = useActionState(joinHousehold, initialState);
+  const [state, formAction, pending] = useActionState(findHouseholdByCode, initialState);
 
   return (
     <form action={formAction} className="flex w-full flex-col gap-3">
@@ -27,7 +27,7 @@ export function JoinHouseholdForm() {
         disabled={pending}
         className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
       >
-        {pending ? "Joining…" : "Join household"}
+        {pending ? "Looking up…" : "Continue"}
       </button>
     </form>
   );
