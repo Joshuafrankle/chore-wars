@@ -73,27 +73,30 @@ export function ChoresList({
     <div className="flex flex-col gap-6">
       <Leaderboard members={data.members} />
 
-      {!data.chores.length ? (
-        <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
-          Nothing set up yet — kitchen, bathroom, and common area duty appear here as soon as
-          your household has members.
-        </p>
-      ) : (
-        <ul className="flex flex-col gap-3">
-          {data.chores.map((chore) => (
-            <ChoreCard
-              key={chore.id}
-              chore={chore}
-              isAnimating={animatingId === chore.assignment?.id}
-              disabled={mutation.isPending}
-              errorMessage={
-                error && error.assignmentId === chore.assignment?.id ? error.message : undefined
-              }
-              onComplete={() => chore.assignment && mutation.mutate(chore.assignment.id)}
-            />
-          ))}
-        </ul>
-      )}
+      <div>
+        <h2 className="mb-3 font-display text-lg font-semibold text-ink">Tasks</h2>
+        {!data.chores.length ? (
+          <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
+            Nothing set up yet — kitchen, bathroom, and common area duty appear here as soon as
+            your household has members.
+          </p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {data.chores.map((chore) => (
+              <ChoreCard
+                key={chore.id}
+                chore={chore}
+                isAnimating={animatingId === chore.assignment?.id}
+                disabled={mutation.isPending}
+                errorMessage={
+                  error && error.assignmentId === chore.assignment?.id ? error.message : undefined
+                }
+                onComplete={() => chore.assignment && mutation.mutate(chore.assignment.id)}
+              />
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 }
