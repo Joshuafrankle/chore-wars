@@ -28,6 +28,32 @@ export async function POST(
     return NextResponse.json({ error: "That chore couldn't be found." }, { status: 404 });
   }
 
+  // The actual anti-farming guard: whoever clicks gets the fairness credit
+  // (not just whoever it's assigned to — someone doing a chore as a favor
+  // should still get the points), but that means it isn't enough to stop
+  // the *assignment* from repeating too soon — the same person could still
+  // complete someone else's assignment for the same chore. So check the
+  // completer's own history directly, regardless of who this assignment
+  // belongs to.
+  const cooldownStart = new Date();
+  cooldownStart.setDate(cooldownStart.getDate() - assignment.chores.frequency_days);
+
+  const { data: recentOwnCompletion } = await supabase
+    .from("chore_completions")
+    .select("id")
+    .eq("chore_id", assignment.chore_id)
+    .eq("user_id", user.id)
+    .gte("completed_at", cooldownStart.toISOString())
+    .limit(1)
+    .maybeSingle();
+
+  if (recentOwnCompletion) {
+    return NextResponse.json(
+      { error: "You already did this one recently — let someone else take this turn." },
+      { status: 403 },
+    );
+  }
+
   // The pending -> done transition *is* the concurrency guard: this UPDATE
   // only matches (and only one concurrent request can win the row) if the
   // assignment is still pending. A double-click, a retried request, or two

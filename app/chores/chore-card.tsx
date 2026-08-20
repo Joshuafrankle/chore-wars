@@ -7,11 +7,13 @@ export function ChoreCard({
   chore,
   isAnimating,
   disabled,
+  errorMessage,
   onComplete,
 }: {
   chore: ChoreListItem;
   isAnimating: boolean;
   disabled: boolean;
+  errorMessage?: string;
   onComplete: () => void;
 }) {
   const reducedMotion = useReducedMotion();
@@ -94,6 +96,7 @@ export function ChoreCard({
         {assignment?.assigneeName ?? "Unassigned"}&apos;s turn
         {dueDate ? ` · due ${dueDate}` : ""}
       </p>
+      {errorMessage && <p className="relative mt-1 text-sm text-overdue">{errorMessage}</p>}
     </li>
   );
 }

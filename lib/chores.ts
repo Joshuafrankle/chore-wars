@@ -7,6 +7,16 @@ import { assignNextTurn } from "./fairness";
 // get picked here. `bathroomId` restricts who's eligible (a bathroom chore
 // only draws from people who picked that bathroom); leave it null for
 // whole-household chores like kitchen/common area.
+//
+// Also skips anyone who completed *this specific chore* within its own
+// cadence (a weekly chore's last doer isn't reassigned it for a week) —
+// otherwise the lowest-scorer could keep getting handed the same chore
+// back-to-back. If that exclusion would leave nobody eligible (a small
+// bathroom group where everyone's done it recently), it's dropped rather
+// than leaving no one to assign. This is a UX nicety, not the actual
+// guard — the real enforcement is in the complete route, which refuses to
+// credit a completion from someone who did this chore too recently
+// regardless of who it's currently assigned to.
 export async function createNextAssignment(
   supabase: SupabaseClient,
   householdId: string,
@@ -16,21 +26,35 @@ export async function createNextAssignment(
 ) {
   const membersQuery = supabase.from("profiles").select("id").eq("household_id", householdId);
 
-  const [{ data: members }, { data: completions }] = await Promise.all([
-    bathroomId ? membersQuery.eq("bathroom_id", bathroomId) : membersQuery,
-    supabase
-      .from("chore_completions")
-      .select("user_id, effort_awarded")
-      .eq("household_id", householdId),
-  ]);
+  const cooldownStart = new Date();
+  cooldownStart.setDate(cooldownStart.getDate() - frequencyDays);
+
+  const [{ data: members }, { data: completions }, { data: recentOwnCompletions }] =
+    await Promise.all([
+      bathroomId ? membersQuery.eq("bathroom_id", bathroomId) : membersQuery,
+      supabase
+        .from("chore_completions")
+        .select("user_id, effort_awarded")
+        .eq("household_id", householdId),
+      supabase
+        .from("chore_completions")
+        .select("user_id")
+        .eq("chore_id", choreId)
+        .gte("completed_at", cooldownStart.toISOString()),
+    ]);
 
   const memberIds = (members ?? []).map((member) => member.id as string);
+  const recentCompleterIds = [
+    ...new Set((recentOwnCompletions ?? []).map((completion) => completion.user_id as string)),
+  ];
+  const eligibleAfterCooldown = memberIds.filter((id) => !recentCompleterIds.includes(id));
+
   const assignee = assignNextTurn(
     (completions ?? []).map((completion) => ({
       userId: completion.user_id as string,
       effortAwarded: completion.effort_awarded as number,
     })),
-    memberIds,
+    eligibleAfterCooldown.length > 0 ? eligibleAfterCooldown : memberIds,
   );
 
   const dueDate = new Date();

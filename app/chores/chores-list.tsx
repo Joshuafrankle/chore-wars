@@ -14,8 +14,9 @@ async function fetchChores(): Promise<ChoresData> {
 
 async function completeAssignment(assignmentId: string) {
   const res = await fetch(`/api/chores/${assignmentId}/complete`, { method: "POST" });
-  if (!res.ok) throw new Error("Couldn't mark that done.");
-  return res.json();
+  const body = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(body.error ?? "Couldn't mark that done.");
+  return body;
 }
 
 export function ChoresList({
@@ -27,12 +28,14 @@ export function ChoresList({
 }) {
   const queryClient = useQueryClient();
   const [animatingId, setAnimatingId] = useState<string | null>(null);
+  const [error, setError] = useState<{ assignmentId: string; message: string } | null>(null);
 
   const { data } = useQuery({ queryKey: ["chores"], queryFn: fetchChores, initialData });
 
   const mutation = useMutation({
     mutationFn: completeAssignment,
     onMutate: async (assignmentId: string) => {
+      setError(null);
       setAnimatingId(assignmentId);
       await queryClient.cancelQueries({ queryKey: ["chores"] });
 
@@ -50,14 +53,19 @@ export function ChoresList({
       }
       return { previous };
     },
-    onError: (_error, _assignmentId, context) => {
+    onError: (err, assignmentId, context) => {
       if (context?.previous) queryClient.setQueryData(["chores"], context.previous);
+      // No point playing the success animation for a rejected completion.
+      setAnimatingId(null);
+      setError({ assignmentId, message: err instanceof Error ? err.message : "Something went wrong." });
     },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["chores"] });
+    onSuccess: () => {
       // Let the animation play out before the row settles into its (likely
       // reassigned) next state.
       setTimeout(() => setAnimatingId(null), 650);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["chores"] });
     },
   });
 
@@ -78,6 +86,9 @@ export function ChoresList({
               chore={chore}
               isAnimating={animatingId === chore.assignment?.id}
               disabled={mutation.isPending}
+              errorMessage={
+                error && error.assignmentId === chore.assignment?.id ? error.message : undefined
+              }
               onComplete={() => chore.assignment && mutation.mutate(chore.assignment.id)}
             />
           ))}
