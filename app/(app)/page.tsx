@@ -5,26 +5,6 @@ import { getChoresData } from "@/lib/chores-data";
 import { InviteDialog } from "./invite-dialog";
 import { ChoresList } from "./chores-list";
 
-async function signOut() {
-  "use server";
-  const supabase = await createClient();
-  await supabase.auth.signOut();
-  redirect("/login");
-}
-
-function SignOutButton() {
-  return (
-    <form action={signOut}>
-      <button
-        type="submit"
-        className="rounded-xl border border-ink/15 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
-      >
-        Sign out
-      </button>
-    </form>
-  );
-}
-
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -54,8 +34,6 @@ export default async function Home() {
         </div>
 
         <ChoresList initialData={data} currentUserId={user!.id} />
-
-        <SignOutButton />
       </main>
     );
   }
@@ -114,8 +92,6 @@ export default async function Home() {
       >
         Add another house
       </Link>
-
-      <SignOutButton />
     </main>
   );
 }
