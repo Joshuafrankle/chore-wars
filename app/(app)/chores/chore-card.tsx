@@ -2,6 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { ChoreListItem } from "@/lib/chores-data";
+import { DueBadge } from "../due-badge";
 
 export function ChoreCard({
   chore,
@@ -18,9 +19,6 @@ export function ChoreCard({
 }) {
   const reducedMotion = useReducedMotion();
   const assignment = chore.assignment;
-  const dueDate = assignment
-    ? new Date(assignment.dueDate).toLocaleDateString("en-GB", { day: "numeric", month: "short" })
-    : null;
 
   return (
     <li className="relative overflow-hidden rounded-2xl bg-doorframe p-4">
@@ -94,7 +92,12 @@ export function ChoreCard({
 
       <p className="relative mt-1 text-sm text-ink/60">
         {assignment?.assigneeName ?? "Unassigned"}&apos;s turn
-        {dueDate ? ` · due ${dueDate}` : ""}
+        {assignment && (
+          <>
+            {" · "}
+            <DueBadge dueDate={assignment.dueDate} />
+          </>
+        )}
       </p>
       {errorMessage && <p className="relative mt-1 text-sm text-overdue">{errorMessage}</p>}
     </li>

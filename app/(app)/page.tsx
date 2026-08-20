@@ -2,8 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { computeFairnessScores } from "@/lib/fairness";
+import { getChoresData } from "@/lib/chores-data";
 import { MemberCard } from "./member-card";
-import { Header } from "./header";
+import { DueBadge } from "./due-badge";
 
 type MemberRow = {
   id: string;
@@ -45,23 +46,25 @@ export default async function Home() {
 
   // Tenant: show their house.
   if (profile?.household_id) {
-    const [{ data: household }, { data: members }, { data: completions }] = await Promise.all([
-      supabase
-        .from("households")
-        .select("name, invite_code")
-        .eq("id", profile.household_id)
-        .single(),
-      supabase
-        .from("profiles")
-        .select("id, display_name, bathroom:bathrooms(label)")
-        .eq("household_id", profile.household_id)
-        .order("display_name")
-        .returns<MemberRow[]>(),
-      supabase
-        .from("chore_completions")
-        .select("user_id, effort_awarded")
-        .eq("household_id", profile.household_id),
-    ]);
+    const [{ data: household }, { data: members }, { data: completions }, choresData] =
+      await Promise.all([
+        supabase
+          .from("households")
+          .select("name, invite_code")
+          .eq("id", profile.household_id)
+          .single(),
+        supabase
+          .from("profiles")
+          .select("id, display_name, bathroom:bathrooms(label)")
+          .eq("household_id", profile.household_id)
+          .order("display_name")
+          .returns<MemberRow[]>(),
+        supabase
+          .from("chore_completions")
+          .select("user_id, effort_awarded")
+          .eq("household_id", profile.household_id),
+        getChoresData(supabase, profile.household_id),
+      ]);
 
     const scores = computeFairnessScores(
       (completions ?? []).map((completion) => ({
@@ -71,55 +74,77 @@ export default async function Home() {
       (members ?? []).map((member) => member.id),
     );
 
+    const dueSoon = [...choresData.chores]
+      .filter((chore) => chore.assignment)
+      .sort(
+        (a, b) => new Date(a.assignment!.dueDate).getTime() - new Date(b.assignment!.dueDate).getTime(),
+      )
+      .slice(0, 3);
+
     return (
-      <>
-        <Header />
-        <main className="flex flex-1 flex-col items-center gap-8 bg-hallway px-6 py-16">
-          <div className="w-full max-w-sm text-center">
-            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
-              {household?.name}
-            </h1>
-            <p className="mt-2 text-ink/70">
-              Signed in as <span className="font-medium">{profile.display_name}</span>
-            </p>
-          </div>
+      <main className="flex flex-1 flex-col items-center gap-8 bg-hallway px-6 py-16">
+        <div className="w-full max-w-sm text-center">
+          <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+            {household?.name}
+          </h1>
+          <p className="mt-2 text-ink/70">
+            Signed in as <span className="font-medium">{profile.display_name}</span>
+          </p>
+        </div>
 
-          <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
-            <p className="text-sm text-ink/60">Invite code</p>
-            <p className="font-display text-2xl font-semibold tracking-[0.2em] text-brass">
-              {household?.invite_code}
-            </p>
-            <p className="mt-1 text-sm text-ink/60">Share this with roommates so they can join.</p>
-          </div>
-
-          <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
-            <p className="mb-3 text-sm text-ink/60">
-              {members?.length} member{members?.length === 1 ? "" : "s"}
-            </p>
+        <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
+          <p className="mb-3 text-sm text-ink/60">Due soon</p>
+          {!dueSoon.length ? (
+            <p className="text-sm text-ink/60">Nothing due — you're all caught up.</p>
+          ) : (
             <ul className="flex flex-col gap-2">
-              {members?.map((member, index) => (
-                <MemberCard
-                  key={member.id}
-                  id={member.id}
-                  displayName={member.display_name}
-                  bathroomLabel={member.bathroom?.label ?? null}
-                  score={scores[member.id] ?? 0}
-                  index={index}
-                />
+              {dueSoon.map((chore) => (
+                <li key={chore.id} className="flex items-center justify-between gap-2 text-sm">
+                  <span className="text-ink">{chore.name}</span>
+                  <span className="shrink-0 text-ink/60">
+                    {chore.assignment!.assigneeName} · <DueBadge dueDate={chore.assignment!.dueDate} />
+                  </span>
+                </li>
               ))}
             </ul>
-          </div>
+          )}
+        </div>
 
-          <Link
-            href="/chores"
-            className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
-          >
-            View chores
-          </Link>
+        <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
+          <p className="text-sm text-ink/60">Invite code</p>
+          <p className="font-display text-2xl font-semibold tracking-[0.2em] text-brass">
+            {household?.invite_code}
+          </p>
+          <p className="mt-1 text-sm text-ink/60">Share this with roommates so they can join.</p>
+        </div>
 
-          <SignOutButton />
-        </main>
-      </>
+        <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
+          <p className="mb-3 text-sm text-ink/60">
+            {members?.length} member{members?.length === 1 ? "" : "s"}
+          </p>
+          <ul className="flex flex-col gap-2">
+            {members?.map((member, index) => (
+              <MemberCard
+                key={member.id}
+                id={member.id}
+                displayName={member.display_name}
+                bathroomLabel={member.bathroom?.label ?? null}
+                score={scores[member.id] ?? 0}
+                index={index}
+              />
+            ))}
+          </ul>
+        </div>
+
+        <Link
+          href="/chores"
+          className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+        >
+          View chores
+        </Link>
+
+        <SignOutButton />
+      </main>
     );
   }
 

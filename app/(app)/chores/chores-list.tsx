@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import type { ChoresData } from "@/lib/chores-data";
 import { ChoreCard } from "./chore-card";
-import { FairnessBar } from "./fairness-bar";
+import { Leaderboard } from "./leaderboard";
 
 async function fetchChores(): Promise<ChoresData> {
   const res = await fetch("/api/chores");
@@ -71,7 +71,7 @@ export function ChoresList({
 
   return (
     <div className="flex flex-col gap-6">
-      <FairnessBar members={data.members} />
+      <Leaderboard members={data.members} />
 
       {!data.chores.length ? (
         <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
