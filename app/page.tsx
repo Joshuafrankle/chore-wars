@@ -1,6 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { computeFairnessScores } from "@/lib/fairness";
+import { MemberCard } from "./member-card";
+
+type MemberRow = {
+  id: string;
+  display_name: string;
+  bathroom: { label: string } | null;
+};
 
 async function signOut() {
   "use server";
@@ -36,7 +44,7 @@ export default async function Home() {
 
   // Tenant: show their house.
   if (profile?.household_id) {
-    const [{ data: household }, { data: members }] = await Promise.all([
+    const [{ data: household }, { data: members }, { data: completions }] = await Promise.all([
       supabase
         .from("households")
         .select("name, invite_code")
@@ -44,10 +52,23 @@ export default async function Home() {
         .single(),
       supabase
         .from("profiles")
-        .select("id, display_name")
+        .select("id, display_name, bathroom:bathrooms(label)")
         .eq("household_id", profile.household_id)
-        .order("display_name"),
+        .order("display_name")
+        .returns<MemberRow[]>(),
+      supabase
+        .from("chore_completions")
+        .select("user_id, effort_awarded")
+        .eq("household_id", profile.household_id),
     ]);
+
+    const scores = computeFairnessScores(
+      (completions ?? []).map((completion) => ({
+        userId: completion.user_id as string,
+        effortAwarded: completion.effort_awarded as number,
+      })),
+      (members ?? []).map((member) => member.id),
+    );
 
     return (
       <main className="flex flex-1 flex-col items-center gap-8 bg-hallway px-6 py-16">
@@ -73,10 +94,14 @@ export default async function Home() {
             {members?.length} member{members?.length === 1 ? "" : "s"}
           </p>
           <ul className="flex flex-col gap-2">
-            {members?.map((member) => (
-              <li key={member.id} className="text-ink">
-                {member.display_name}
-              </li>
+            {members?.map((member, index) => (
+              <MemberCard
+                key={member.id}
+                displayName={member.display_name}
+                bathroomLabel={member.bathroom?.label ?? null}
+                score={scores[member.id] ?? 0}
+                index={index}
+              />
             ))}
           </ul>
         </div>
