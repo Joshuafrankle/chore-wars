@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import type { ChoreListItem } from "@/lib/chores-data";
-import { DueBadge } from "../due-badge";
+import { DueBadge } from "./due-badge";
 
 export function ChoreCard({
   chore,
