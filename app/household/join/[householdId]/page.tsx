@@ -25,7 +25,7 @@ export default async function ChooseBathroomPage({
     supabase.from("bathrooms").select("id, label").eq("household_id", householdId).order("label"),
   ]);
 
-  if (!household || !bathrooms?.length) redirect("/household/join");
+  if (!household || !bathrooms?.length) redirect("/household/join?error=invalid");
 
   return (
     <main className="flex flex-1 flex-col items-center justify-center gap-6 bg-hallway px-6">
