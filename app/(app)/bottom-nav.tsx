@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 
-// Just one tab for now — chores live on the home screen itself. This grows
-// again once there's a second real destination (e.g. bills).
-const TABS = [{ href: "/", label: "Home" }];
+const TABS = [
+  { href: "/", label: "Home" },
+  { href: "/tenants", label: "Tenants" },
+];
 
 export async function BottomNav() {
   const supabase = await createClient();
