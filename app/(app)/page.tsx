@@ -13,22 +13,24 @@ export default async function Home() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("household_id")
+    .select("household_id, display_name")
     .eq("id", user!.id)
     .single();
 
   // Tenant: chores are the home screen.
   if (profile?.household_id) {
     const [{ data: household }, data] = await Promise.all([
-      supabase.from("households").select("name, invite_code").eq("id", profile.household_id).single(),
+      supabase.from("households").select("invite_code").eq("id", profile.household_id).single(),
       getChoresData(supabase, profile.household_id),
     ]);
+
+    const firstName = profile.display_name?.split(" ")[0] ?? "there";
 
     return (
       <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
         <div className="flex items-center justify-between">
           <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
-            {household?.name}
+            Hey, {firstName}!
           </h1>
           <InviteDialog inviteCode={household?.invite_code ?? ""} />
         </div>

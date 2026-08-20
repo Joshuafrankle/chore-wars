@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { initials } from "@/lib/avatar";
+import { SignOutDialog } from "./sign-out-dialog";
 
 async function signOut() {
   "use server";
@@ -23,25 +24,40 @@ export async function Header() {
     .eq("id", user.id)
     .maybeSingle();
 
+  let householdName = "Chore Wars";
+  if (profile?.household_id) {
+    const { data: household } = await supabase
+      .from("households")
+      .select("name")
+      .eq("id", profile.household_id)
+      .maybeSingle();
+    if (household?.name) householdName = household.name;
+  }
+
   return (
-    <header className="flex items-center justify-end gap-2 px-6 py-4">
-      {profile?.household_id && (
-        <Link
-          href={`/members/${user.id}`}
-          aria-label="Your profile"
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-brass font-display text-xs font-semibold text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+    <header className="flex items-center justify-between px-6 py-4">
+      <div className="flex min-w-0 items-center gap-2">
+        <span
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brass font-display text-xs font-bold text-doorframe"
+          aria-hidden="true"
         >
-          {initials(profile.display_name)}
-        </Link>
-      )}
-      <form action={signOut}>
-        <button
-          type="submit"
-          className="rounded-xl border border-ink/15 px-3 py-2 text-sm font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
-        >
-          Sign out
-        </button>
-      </form>
+          CW
+        </span>
+        <span className="truncate font-display text-sm font-semibold text-ink">{householdName}</span>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-2">
+        {profile?.household_id && (
+          <Link
+            href={`/members/${user.id}`}
+            aria-label="Your profile"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-brass font-display text-xs font-semibold text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+          >
+            {initials(profile.display_name)}
+          </Link>
+        )}
+        <SignOutDialog signOutAction={signOut} />
+      </div>
     </header>
   );
 }
