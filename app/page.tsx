@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { computeFairnessScores } from "@/lib/fairness";
 import { MemberCard } from "./member-card";
+import { Header } from "./header";
 
 type MemberRow = {
   id: string;
@@ -71,51 +72,54 @@ export default async function Home() {
     );
 
     return (
-      <main className="flex flex-1 flex-col items-center gap-8 bg-hallway px-6 py-16">
-        <div className="w-full max-w-sm text-center">
-          <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
-            {household?.name}
-          </h1>
-          <p className="mt-2 text-ink/70">
-            Signed in as <span className="font-medium">{profile.display_name}</span>
-          </p>
-        </div>
+      <>
+        <Header />
+        <main className="flex flex-1 flex-col items-center gap-8 bg-hallway px-6 py-16">
+          <div className="w-full max-w-sm text-center">
+            <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
+              {household?.name}
+            </h1>
+            <p className="mt-2 text-ink/70">
+              Signed in as <span className="font-medium">{profile.display_name}</span>
+            </p>
+          </div>
 
-        <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
-          <p className="text-sm text-ink/60">Invite code</p>
-          <p className="font-display text-2xl font-semibold tracking-[0.2em] text-brass">
-            {household?.invite_code}
-          </p>
-          <p className="mt-1 text-sm text-ink/60">Share this with roommates so they can join.</p>
-        </div>
+          <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
+            <p className="text-sm text-ink/60">Invite code</p>
+            <p className="font-display text-2xl font-semibold tracking-[0.2em] text-brass">
+              {household?.invite_code}
+            </p>
+            <p className="mt-1 text-sm text-ink/60">Share this with roommates so they can join.</p>
+          </div>
 
-        <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
-          <p className="mb-3 text-sm text-ink/60">
-            {members?.length} member{members?.length === 1 ? "" : "s"}
-          </p>
-          <ul className="flex flex-col gap-2">
-            {members?.map((member, index) => (
-              <MemberCard
-                key={member.id}
-                id={member.id}
-                displayName={member.display_name}
-                bathroomLabel={member.bathroom?.label ?? null}
-                score={scores[member.id] ?? 0}
-                index={index}
-              />
-            ))}
-          </ul>
-        </div>
+          <div className="w-full max-w-sm rounded-2xl bg-doorframe p-5">
+            <p className="mb-3 text-sm text-ink/60">
+              {members?.length} member{members?.length === 1 ? "" : "s"}
+            </p>
+            <ul className="flex flex-col gap-2">
+              {members?.map((member, index) => (
+                <MemberCard
+                  key={member.id}
+                  id={member.id}
+                  displayName={member.display_name}
+                  bathroomLabel={member.bathroom?.label ?? null}
+                  score={scores[member.id] ?? 0}
+                  index={index}
+                />
+              ))}
+            </ul>
+          </div>
 
-        <Link
-          href="/chores"
-          className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
-        >
-          View chores
-        </Link>
+          <Link
+            href="/chores"
+            className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+          >
+            View chores
+          </Link>
 
-        <SignOutButton />
-      </main>
+          <SignOutButton />
+        </main>
+      </>
     );
   }
 
