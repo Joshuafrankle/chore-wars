@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -27,7 +28,9 @@ export default function RootLayout({
       lang="en"
       className={`${spaceGrotesk.variable} ${workSans.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-body">{children}</body>
+      <body className="min-h-full flex flex-col font-body">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
