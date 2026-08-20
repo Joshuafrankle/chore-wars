@@ -97,6 +97,7 @@ export default async function Home() {
             {members?.map((member, index) => (
               <MemberCard
                 key={member.id}
+                id={member.id}
                 displayName={member.display_name}
                 bathroomLabel={member.bathroom?.label ?? null}
                 score={scores[member.id] ?? 0}
