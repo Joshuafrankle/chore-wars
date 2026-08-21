@@ -19,6 +19,11 @@ export default async function JoinHouseholdPage({
             with whoever invited you.
           </p>
         )}
+        {error === "full" && (
+          <p className="mb-4 text-sm text-overdue">
+            This house has no rooms left. Check with whoever invited you.
+          </p>
+        )}
         <JoinHouseholdForm />
       </div>
     </main>

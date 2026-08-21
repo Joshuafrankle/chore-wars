@@ -8,6 +8,7 @@ import { AVATAR_OPACITIES, initials } from "@/lib/avatar";
 type MemberProfile = {
   id: string;
   display_name: string;
+  room_number: number | null;
   bathroom: { label: string } | null;
 };
 
@@ -33,7 +34,7 @@ export default async function MemberProfilePage({
       // just returns nothing under RLS, not another household's data.
       supabase
         .from("profiles")
-        .select("id, display_name, bathroom:bathrooms(label)")
+        .select("id, display_name, room_number, bathroom:bathrooms(label)")
         .eq("id", id)
         .eq("household_id", householdId)
         .maybeSingle<MemberProfile>(),
@@ -95,7 +96,10 @@ export default async function MemberProfilePage({
           <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
             {member.display_name}
           </h1>
-          <p className="text-sm text-ink/60">{member.bathroom?.label ?? "No bathroom set"}</p>
+          <p className="text-sm text-ink/60">
+            {member.room_number ? `Room ${member.room_number}` : "No room set"} ·{" "}
+            {member.bathroom?.label ?? "No bathroom set"}
+          </p>
         </div>
       </div>
 
