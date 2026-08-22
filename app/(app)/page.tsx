@@ -5,6 +5,13 @@ import { getChoresData } from "@/lib/chores-data";
 import { InviteDialog } from "./invite-dialog";
 import { ChoresList } from "./chores-list";
 
+function timeOfDayGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Morning";
+  if (hour < 18) return "Afternoon";
+  return "Evening";
+}
+
 export default async function Home() {
   const supabase = await createClient();
   const {
@@ -25,13 +32,21 @@ export default async function Home() {
     ]);
 
     const firstName = profile.display_name?.split(" ")[0] ?? "there";
+    const today = new Date().toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    });
 
     return (
       <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
         <div className="flex items-center justify-between">
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
-            Hey, {firstName}!
-          </h1>
+          <div>
+            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
+              {timeOfDayGreeting()}, {firstName}.
+            </h1>
+            <p className="mt-0.5 text-sm text-ink/60">{today}</p>
+          </div>
           <InviteDialog inviteCode={household?.invite_code ?? ""} />
         </div>
 
