@@ -20,9 +20,9 @@ export function DialogContent({
 }: ComponentPropsWithoutRef<typeof DialogPrimitive.Content>) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/40" />
+      <DialogPrimitive.Overlay className="dialog-overlay fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm" />
       <DialogPrimitive.Content
-        className={`fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-2xl bg-doorframe p-6 shadow-xl focus:outline-none ${className}`}
+        className={`dialog-content fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-doorframe p-6 shadow-xl focus:outline-none ${className}`}
         {...props}
       >
         {children}

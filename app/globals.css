@@ -12,6 +12,15 @@
   --color-spruce: #2f6b4f;
   --color-tally: #3a6c8c;
   --color-overdue: #b14a4a;
+
+  /* Pastel chore-category chips — kitchen/bathroom/common area, purely
+     for the small icon badge on each chore card. */
+  --color-kitchen: #f6c9a8;
+  --color-kitchen-ink: #8a5a34;
+  --color-bathroom: #bcd9e3;
+  --color-bathroom-ink: #35636f;
+  --color-common: #c7e1d1;
+  --color-common-ink: #3c6350;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,6 +33,13 @@
     --color-spruce: #57a97d;
     --color-tally: #7fb2ce;
     --color-overdue: #e08787;
+
+    --color-kitchen: #5a4230;
+    --color-kitchen-ink: #f0c39d;
+    --color-bathroom: #2c4750;
+    --color-bathroom-ink: #a9d3df;
+    --color-common: #2d4a3c;
+    --color-common-ink: #b3d9c2;
   }
 }
 
@@ -35,6 +51,12 @@
   --color-spruce: var(--color-spruce);
   --color-tally: var(--color-tally);
   --color-overdue: var(--color-overdue);
+  --color-kitchen: var(--color-kitchen);
+  --color-kitchen-ink: var(--color-kitchen-ink);
+  --color-bathroom: var(--color-bathroom);
+  --color-bathroom-ink: var(--color-bathroom-ink);
+  --color-common: var(--color-common);
+  --color-common-ink: var(--color-common-ink);
 
   --font-display: var(--font-space-grotesk);
   --font-body: var(--font-work-sans);
@@ -44,6 +66,42 @@ body {
   background: var(--color-hallway);
   color: var(--color-ink);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+/* Dialog entrance — Radix only mounts Overlay/Content when open, so this
+   plays naturally on mount with no data-state gating needed. No exit
+   animation (Radix unmounts immediately on close, no forceMount) — a
+   deliberate simplification rather than the more fragile forceMount +
+   AnimatePresence combination, which isn't safe to ship unverified. */
+@keyframes dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dialog-content-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) translateY(0);
+  }
+}
+
+.dialog-overlay {
+  animation: dialog-overlay-in 0.2s ease-out;
+}
+
+.dialog-content {
+  /* forwards: the final keyframe's transform (centering translate + scale)
+     must persist after the animation ends, or the dialog would snap back
+     to an untransformed position once it finishes. */
+  animation: dialog-content-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
