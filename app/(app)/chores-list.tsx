@@ -82,10 +82,11 @@ export function ChoresList({
           </p>
         ) : (
           <ul className="flex flex-col gap-3">
-            {data.chores.map((chore) => (
+            {data.chores.map((chore, index) => (
               <ChoreCard
                 key={chore.id}
                 chore={chore}
+                index={index}
                 isAnimating={animatingId === chore.assignment?.id}
                 disabled={mutation.isPending}
                 errorMessage={

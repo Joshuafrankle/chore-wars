@@ -9,11 +9,14 @@ export type ChoreAssignment = {
   assigneeName: string;
 };
 
+export type ChoreKind = "kitchen" | "common_area" | "bathroom";
+
 export type ChoreListItem = {
   id: string;
   name: string;
   effortWeight: number;
   frequencyDays: number;
+  defaultKind: ChoreKind | null;
   assignment: ChoreAssignment | null;
 };
 
@@ -26,6 +29,7 @@ type RawChore = {
   name: string;
   effort_weight: number;
   frequency_days: number;
+  default_kind: ChoreKind | null;
   chore_assignments: {
     id: string;
     due_date: string;
@@ -44,7 +48,7 @@ export async function getChoresData(
     supabase
       .from("chores")
       .select(
-        `id, name, effort_weight, frequency_days,
+        `id, name, effort_weight, frequency_days, default_kind,
          chore_assignments!inner(id, due_date, assignee:profiles(id, display_name))`,
       )
       .eq("household_id", householdId)
@@ -98,6 +102,7 @@ export async function getChoresData(
         name: chore.name,
         effortWeight: chore.effort_weight,
         frequencyDays: chore.frequency_days,
+        defaultKind: chore.default_kind,
         assignment:
           assignment && assignment.assignee
             ? {
