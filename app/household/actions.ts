@@ -53,6 +53,7 @@ export async function createHousehold(
     .single();
 
   if (householdError || !household) {
+    console.error("createHousehold insert failed:", householdError);
     return { error: "Couldn't create the house. Try again." };
   }
 
@@ -63,6 +64,7 @@ export async function createHousehold(
   const { error: bathroomError } = await supabase.from("bathrooms").insert(bathrooms);
 
   if (bathroomError) {
+    console.error("createHousehold bathrooms insert failed:", bathroomError);
     return { error: "House created, but couldn't set up its bathrooms. Try again." };
   }
 
