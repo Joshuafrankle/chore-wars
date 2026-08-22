@@ -2,6 +2,9 @@ import Link from "next/link";
 import type { Member } from "@/lib/chores-data";
 import { AVATAR_OPACITIES, initials } from "@/lib/avatar";
 
+// Score/fairness intentionally left off these cards — the leaderboard is
+// the one place that owns the score, so this stays streak-only rather than
+// showing the same number twice in two different shapes on one screen.
 export function MemberGrid({ members }: { members: Member[] }) {
   return (
     <div className="grid grid-cols-2 gap-3">
@@ -9,20 +12,20 @@ export function MemberGrid({ members }: { members: Member[] }) {
         <Link
           key={member.id}
           href={`/members/${member.id}`}
-          className="flex flex-col items-center gap-1.5 rounded-2xl bg-doorframe p-4 text-center transition-colors hover:bg-doorframe/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+          className="flex flex-col items-center gap-2 rounded-3xl bg-doorframe p-5 text-center shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
         >
           <span
-            className="flex h-11 w-11 items-center justify-center rounded-full bg-brass font-display text-sm font-semibold text-doorframe"
+            className="flex h-14 w-14 items-center justify-center rounded-full bg-brass font-display text-lg font-semibold text-doorframe"
             style={{ opacity: AVATAR_OPACITIES[index % AVATAR_OPACITIES.length] }}
             aria-hidden="true"
           >
             {initials(member.displayName)}
           </span>
           <p className="truncate text-sm font-medium text-ink">{member.displayName}</p>
-          <p className="text-xs text-ink/60">
+          <p className="rounded-full bg-hallway px-2.5 py-1 text-xs font-medium text-ink/70">
             {member.streak > 0 ? (
               <>
-                <span aria-hidden="true">🔥</span> {member.streak} streak
+                <span aria-hidden="true">🔥</span> {member.streak} day streak
               </>
             ) : (
               "No streak yet"

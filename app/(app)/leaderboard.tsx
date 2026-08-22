@@ -1,38 +1,16 @@
 "use client";
 
-import { animate, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import type { Member } from "@/lib/chores-data";
 import { AVATAR_OPACITIES, initials } from "@/lib/avatar";
-
-function CountUp({ value }: { value: number }) {
-  const [display, setDisplay] = useState(value);
-  const previous = useRef(value);
-  const reducedMotion = useReducedMotion();
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setDisplay(value);
-      previous.current = value;
-      return;
-    }
-    const controls = animate(previous.current, value, {
-      duration: 0.6,
-      onUpdate: (v) => setDisplay(Math.round(v)),
-    });
-    previous.current = value;
-    return () => controls.stop();
-  }, [value, reducedMotion]);
-
-  return <span>{display}</span>;
-}
+import { AnimatedNumber } from "./animated-number";
 
 export function Leaderboard({ members }: { members: Member[] }) {
   const ranked = [...members].sort((a, b) => b.score - a.score);
   const topScore = Math.max(...ranked.map((m) => m.score), 1);
 
   return (
-    <div className="rounded-2xl bg-doorframe p-4">
+    <div className="rounded-3xl bg-doorframe p-5 shadow-sm">
       <p className="mb-3 text-sm text-ink/60">Fairness leaderboard</p>
       <ul className="flex flex-col gap-2">
         {ranked.map((member, index) => (
@@ -51,7 +29,7 @@ export function Leaderboard({ members }: { members: Member[] }) {
               <div className="flex items-center justify-between gap-2">
                 <span className="truncate text-sm font-medium text-ink">{member.displayName}</span>
                 <span className="shrink-0 text-sm font-medium text-ink">
-                  <CountUp value={member.score} />
+                  <AnimatedNumber value={member.score} />
                 </span>
               </div>
               <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-hallway">

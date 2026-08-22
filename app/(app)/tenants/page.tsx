@@ -8,7 +8,7 @@ export default async function TenantsPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">Tenants</h1>
+      <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">The Squad</h1>
       <MemberGrid members={members} />
     </main>
   );
