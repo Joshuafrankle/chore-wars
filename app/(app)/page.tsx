@@ -40,14 +40,16 @@ export default async function Home() {
 
     return (
       <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="truncate font-display text-2xl font-semibold tracking-tight text-ink">
               {timeOfDayGreeting()}, {firstName}.
             </h1>
             <p className="mt-0.5 text-sm text-ink/60">{today}</p>
           </div>
-          <InviteDialog inviteCode={household?.invite_code ?? ""} />
+          <div className="shrink-0">
+            <InviteDialog inviteCode={household?.invite_code ?? ""} />
+          </div>
         </div>
 
         <ChoresList initialData={data} currentUserId={user!.id} />
@@ -95,7 +97,7 @@ export default async function Home() {
             <p className="mt-1 text-sm text-ink/60">
               {tenantCounts.get(household.id) ?? 0} tenant
               {(tenantCounts.get(household.id) ?? 0) === 1 ? "" : "s"} · invite code{" "}
-              <span className="font-medium tracking-widest text-brass">
+              <span className="font-medium tracking-widest text-coral">
                 {household.invite_code}
               </span>
             </p>
@@ -105,7 +107,7 @@ export default async function Home() {
 
       <Link
         href="/household/new"
-        className="rounded-xl border border-ink/15 px-5 py-3 font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+        className="rounded-xl border border-ink/15 px-5 py-3 font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
       >
         Add another house
       </Link>

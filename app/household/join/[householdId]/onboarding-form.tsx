@@ -8,7 +8,7 @@ const initialState: ActionState = {};
 type Bathroom = { id: string; label: string };
 
 const fieldClass =
-  "rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-brass";
+  "rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-coral";
 
 export function OnboardingForm({
   householdId,
@@ -34,7 +34,8 @@ export function OnboardingForm({
         id="displayName"
         name="displayName"
         required
-        defaultValue={defaultName}
+        maxLength={40}
+        defaultValue={defaultName.slice(0, 40)}
         placeholder="e.g. Priya"
         className={fieldClass}
       />
@@ -58,7 +59,7 @@ export function OnboardingForm({
         {bathrooms.map((bathroom, index) => (
           <label
             key={bathroom.id}
-            className="flex items-center gap-3 rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink has-[:checked]:border-brass"
+            className="flex items-center gap-3 rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink has-[:checked]:border-coral"
           >
             <input
               type="radio"
@@ -66,7 +67,7 @@ export function OnboardingForm({
               value={bathroom.id}
               required
               defaultChecked={index === 0}
-              className="accent-brass"
+              className="accent-coral"
             />
             {bathroom.label}
           </label>
@@ -77,7 +78,7 @@ export function OnboardingForm({
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
+        className="rounded-xl bg-coral px-5 py-3 font-medium text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
       >
         {pending ? "Joining…" : "Join house"}
       </button>

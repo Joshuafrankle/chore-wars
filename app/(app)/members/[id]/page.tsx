@@ -84,7 +84,7 @@ export default async function MemberProfilePage({
 
       <div className="flex items-center gap-4">
         <span
-          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-brass font-display text-lg font-semibold text-doorframe"
+          className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-coral font-display text-lg font-semibold text-doorframe"
           style={{
             opacity: AVATAR_OPACITIES[Math.max(avatarIndex, 0) % AVATAR_OPACITIES.length],
           }}
@@ -92,11 +92,11 @@ export default async function MemberProfilePage({
         >
           {initials(member.display_name)}
         </span>
-        <div>
-          <h1 className="font-display text-2xl font-semibold tracking-tight text-ink">
+        <div className="min-w-0">
+          <h1 className="truncate font-display text-2xl font-semibold tracking-tight text-ink">
             {member.display_name}
           </h1>
-          <p className="text-sm text-ink/60">
+          <p className="truncate text-sm text-ink/60">
             {member.room_number ? `Room ${member.room_number}` : "No room set"} ·{" "}
             {member.bathroom?.label ?? "No bathroom set"}
           </p>
@@ -106,7 +106,7 @@ export default async function MemberProfilePage({
       <div className="flex gap-3">
         <div className="flex-1 rounded-2xl bg-doorframe p-5">
           <p className="text-sm text-ink/60">Fairness score</p>
-          <p className="font-display text-3xl font-semibold text-brass">{score}</p>
+          <p className="font-display text-3xl font-semibold text-coral">{score}</p>
         </div>
         <div className="flex-1 rounded-2xl bg-doorframe p-5">
           <p className="text-sm text-ink/60">On-time streak</p>

@@ -112,6 +112,7 @@ export async function joinHousehold(
 
   if (!householdId) return { error: "Something went wrong. Try again." };
   if (!displayName) return { error: "Enter your name." };
+  if (displayName.length > 40) return { error: "Name must be 40 characters or fewer." };
   if (!bathroomId) return { error: "Pick which bathroom you use." };
   if (!Number.isInteger(roomNumber) || roomNumber < 1) return { error: "Pick your room." };
 
