@@ -2,13 +2,13 @@
 
 :root {
   /* Hallway: page background. Doorframe: card/surface. Ink: text. */
-  --color-hallway: #f1ece4;
+  --color-hallway: #faf9f7;
   --color-doorframe: #ffffff;
-  --color-ink: #241f1a;
+  --color-ink: #1a1a1c;
 
-  /* Brass: primary accent (CTAs, focus). Spruce: fairness/completion.
+  /* Coral: primary accent (CTAs, focus). Spruce: fairness/completion.
      Tally: money/bills. Overdue: attention badges only. */
-  --color-brass: #b4802e;
+  --color-coral: #e8785f;
   --color-spruce: #2f6b4f;
   --color-tally: #3a6c8c;
   --color-overdue: #b14a4a;
@@ -23,13 +23,17 @@
   --color-common-ink: #3c6350;
 }
 
+/* Dark values apply either from OS preference (when the user hasn't
+   explicitly chosen a theme in-app) or from an explicit data-theme="dark"
+   set by the toggle — :not([data-theme="light"]) lets an explicit light
+   choice override the OS preference rather than being fought by it. */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --color-hallway: #1c1a17;
-    --color-doorframe: #26221d;
-    --color-ink: #f3ece3;
+  :root:not([data-theme="light"]) {
+    --color-hallway: #18181a;
+    --color-doorframe: #222226;
+    --color-ink: #f0eeec;
 
-    --color-brass: #d9a354;
+    --color-coral: #f0937b;
     --color-spruce: #57a97d;
     --color-tally: #7fb2ce;
     --color-overdue: #e08787;
@@ -43,11 +47,29 @@
   }
 }
 
+:root[data-theme="dark"] {
+  --color-hallway: #18181a;
+  --color-doorframe: #222226;
+  --color-ink: #f0eeec;
+
+  --color-coral: #f0937b;
+  --color-spruce: #57a97d;
+  --color-tally: #7fb2ce;
+  --color-overdue: #e08787;
+
+  --color-kitchen: #5a4230;
+  --color-kitchen-ink: #f0c39d;
+  --color-bathroom: #2c4750;
+  --color-bathroom-ink: #a9d3df;
+  --color-common: #2d4a3c;
+  --color-common-ink: #b3d9c2;
+}
+
 @theme inline {
   --color-hallway: var(--color-hallway);
   --color-doorframe: var(--color-doorframe);
   --color-ink: var(--color-ink);
-  --color-brass: var(--color-brass);
+  --color-coral: var(--color-coral);
   --color-spruce: var(--color-spruce);
   --color-tally: var(--color-tally);
   --color-overdue: var(--color-overdue);
@@ -58,14 +80,25 @@
   --color-common: var(--color-common);
   --color-common-ink: var(--color-common-ink);
 
-  --font-display: var(--font-space-grotesk);
-  --font-body: var(--font-work-sans);
+  --font-display: var(--font-plus-jakarta-sans);
+  --font-body: var(--font-plus-jakarta-sans);
 }
 
 body {
   background: var(--color-hallway);
   color: var(--color-ink);
   font-family: var(--font-body), Arial, Helvetica, sans-serif;
+}
+
+/* Standard two-layer "premium card" shadow — a tight layer to ground the
+   card against the surface plus a soft, larger ambient layer for actual
+   depth. Tailwind's shadow-sm alone (0 1px 2px, 5% opacity) reads as
+   almost nothing against our near-white background, which is why cards
+   were looking flat/undesigned in light mode. */
+.card-elevated {
+  box-shadow:
+    0 1px 2px rgba(20, 15, 10, 0.04),
+    0 12px 28px -8px rgba(20, 15, 10, 0.12);
 }
 
 /* Dialog entrance — Radix only mounts Overlay/Content when open, so this
@@ -85,11 +118,11 @@ body {
 @keyframes dialog-content-in {
   from {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.94) translateY(6px);
+    transform: scale(0.94) translateY(6px);
   }
   to {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1) translateY(0);
+    transform: scale(1) translateY(0);
   }
 }
 
