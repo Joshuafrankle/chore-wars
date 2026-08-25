@@ -21,12 +21,20 @@ export function DialogContent({
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Overlay className="dialog-overlay fixed inset-0 z-50 bg-ink/40 backdrop-blur-sm" />
-      <DialogPrimitive.Content
-        className={`dialog-content fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-3xl bg-doorframe p-6 shadow-xl focus:outline-none ${className}`}
-        {...props}
-      >
-        {children}
-      </DialogPrimitive.Content>
+      {/* Flexbox centers the content instead of fixed + top/left 50% +
+          negative translate — that approach put the same `transform`
+          property under contention with the entrance animation's own
+          transform, and had no height cap, so tall content (a long
+          WhatsApp link, a multi-field form) pushed the box past the
+          viewport top/bottom with no way to scroll to it. */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4">
+        <DialogPrimitive.Content
+          className={`dialog-content max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-3xl bg-doorframe p-6 shadow-xl focus:outline-none ${className}`}
+          {...props}
+        >
+          {children}
+        </DialogPrimitive.Content>
+      </div>
     </DialogPrimitive.Portal>
   );
 }
