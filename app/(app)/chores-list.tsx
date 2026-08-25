@@ -76,7 +76,7 @@ export function ChoresList({
       <div>
         <h2 className="mb-3 font-display text-lg font-semibold text-ink">Tasks</h2>
         {!data.chores.length ? (
-          <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
+          <p className="card-elevated rounded-3xl bg-doorframe p-6 text-center text-ink/70">
             Nothing set up yet — kitchen, bathroom, and common area duty appear here as soon as
             your household has members.
           </p>

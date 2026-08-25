@@ -52,7 +52,7 @@ export function LoginForm() {
         required
         autoComplete="email"
         placeholder="you@example.com"
-        className="border-ink/15 bg-doorframe text-ink placeholder:text-ink/40 focus-visible:ring-brass rounded-xl border px-4 py-3 outline-none focus-visible:ring-2"
+        className="border-ink/15 bg-doorframe text-ink placeholder:text-ink/40 focus-visible:ring-coral rounded-xl border px-4 py-3 outline-none focus-visible:ring-2"
       />
       {status === "error" && (
         <p className="text-overdue text-sm">
@@ -62,7 +62,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="bg-brass text-doorframe hover:bg-brass/90 focus-visible:ring-brass focus-visible:ring-offset-hallway rounded-xl px-5 py-3 font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
+        className="bg-coral text-doorframe hover:bg-coral/90 focus-visible:ring-coral focus-visible:ring-offset-hallway rounded-xl px-5 py-3 font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:opacity-60"
       >
         {status === "sending" ? "Sending link…" : "Email me a sign-in link"}
       </button>

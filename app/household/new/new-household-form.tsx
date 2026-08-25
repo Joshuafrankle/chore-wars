@@ -6,7 +6,7 @@ import { createHousehold, type ActionState } from "../actions";
 const initialState: ActionState = {};
 
 const fieldClass =
-  "rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-brass";
+  "rounded-xl border border-ink/15 bg-doorframe px-4 py-3 text-ink outline-none placeholder:text-ink/40 focus-visible:ring-2 focus-visible:ring-coral";
 
 export function NewHouseholdForm() {
   const [state, formAction, pending] = useActionState(createHousehold, initialState);
@@ -72,7 +72,7 @@ export function NewHouseholdForm() {
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
+        className="rounded-xl bg-coral px-5 py-3 font-medium text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
       >
         {pending ? "Creating…" : "Create house"}
       </button>

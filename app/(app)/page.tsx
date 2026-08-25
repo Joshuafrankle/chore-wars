@@ -92,7 +92,7 @@ export default async function Home() {
 
       <ul className="flex w-full max-w-sm flex-col gap-3">
         {ownedHouseholds.map((household) => (
-          <li key={household.id} className="rounded-2xl bg-doorframe p-4">
+          <li key={household.id} className="card-elevated rounded-3xl bg-doorframe p-4">
             <p className="font-medium text-ink">{household.name}</p>
             <p className="mt-1 text-sm text-ink/60">
               {tenantCounts.get(household.id) ?? 0} tenant

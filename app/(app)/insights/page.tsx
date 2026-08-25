@@ -36,9 +36,9 @@ export default async function InsightsPage() {
 
       <FairnessBars members={members} />
 
-      <div className="rounded-3xl bg-doorframe p-6 shadow-sm">
+      <div className="rounded-3xl bg-doorframe p-6 card-elevated">
         <p className="text-sm text-ink/60">This week</p>
-        <p className="font-display text-4xl font-semibold text-brass">
+        <p className="font-display text-4xl font-semibold text-coral">
           <AnimatedNumber value={weekPoints} /> pts
         </p>
 

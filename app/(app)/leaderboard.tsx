@@ -10,7 +10,7 @@ export function Leaderboard({ members }: { members: Member[] }) {
   const topScore = Math.max(...ranked.map((m) => m.score), 1);
 
   return (
-    <div className="rounded-3xl bg-doorframe p-5 shadow-sm">
+    <div className="rounded-3xl bg-doorframe p-5 card-elevated">
       <p className="mb-3 text-sm text-ink/60">Fairness leaderboard</p>
       <ul className="flex flex-col gap-2">
         {ranked.map((member, index) => (
@@ -19,7 +19,7 @@ export function Leaderboard({ members }: { members: Member[] }) {
               {index + 1}
             </span>
             <span
-              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-brass font-display text-xs font-semibold text-doorframe"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-coral font-display text-xs font-semibold text-doorframe"
               style={{ opacity: AVATAR_OPACITIES[index % AVATAR_OPACITIES.length] }}
               aria-hidden="true"
             >
@@ -34,7 +34,7 @@ export function Leaderboard({ members }: { members: Member[] }) {
               </div>
               <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-hallway">
                 <motion.div
-                  className="h-full rounded-full bg-brass"
+                  className="h-full rounded-full bg-coral"
                   style={{ opacity: AVATAR_OPACITIES[index % AVATAR_OPACITIES.length] }}
                   animate={{ width: `${(member.score / topScore) * 100}%` }}
                   transition={{ type: "spring", stiffness: 120, damping: 20 }}

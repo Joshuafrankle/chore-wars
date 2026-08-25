@@ -13,7 +13,7 @@ export function DueBadge({ dueDate }: { dueDate: string }) {
     status === "overdue"
       ? "font-medium text-overdue"
       : status === "due-today"
-        ? "font-medium text-brass"
+        ? "font-medium text-coral"
         : "text-ink/60";
 
   return <span className={className}>{label}</span>;

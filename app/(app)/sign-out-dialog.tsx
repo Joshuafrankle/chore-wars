@@ -14,7 +14,7 @@ export function SignOutDialog({ signOutAction }: { signOutAction: () => Promise<
     <Dialog>
       <DialogTrigger
         aria-label="Sign out"
-        className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass"
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-ink/15 text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
       >
         <svg
           viewBox="0 0 24 24"
@@ -36,7 +36,7 @@ export function SignOutDialog({ signOutAction }: { signOutAction: () => Promise<
         <DialogDescription>You&apos;ll need your email again to sign back in.</DialogDescription>
 
         <div className="mt-4 flex gap-2">
-          <DialogClose className="flex-1 rounded-xl border border-ink/15 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-hallway focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass">
+          <DialogClose className="flex-1 rounded-xl border border-ink/15 px-4 py-2 text-sm font-medium text-ink transition-colors hover:bg-hallway focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral">
             Cancel
           </DialogClose>
           <form action={signOutAction} className="flex-1">

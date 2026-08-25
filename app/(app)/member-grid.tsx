@@ -12,7 +12,7 @@ export function MemberGrid({ members }: { members: Member[] }) {
         <Link
           key={member.id}
           href={`/members/${member.id}`}
-          className="flex min-w-0 flex-col items-center gap-2 rounded-3xl bg-doorframe p-5 text-center shadow-sm transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
+          className="flex min-w-0 flex-col items-center gap-2 rounded-3xl bg-doorframe p-5 text-center card-elevated transition-transform hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
         >
           <span
             className="flex h-14 w-14 items-center justify-center rounded-full bg-coral font-display text-lg font-semibold text-doorframe"

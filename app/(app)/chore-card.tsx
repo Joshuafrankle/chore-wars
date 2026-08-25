@@ -25,7 +25,7 @@ export function ChoreCard({
 
   return (
     <motion.li
-      className="relative overflow-hidden rounded-3xl bg-doorframe p-4 shadow-sm"
+      className="relative overflow-hidden rounded-3xl bg-doorframe p-4 card-elevated"
       initial={reducedMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
@@ -52,7 +52,7 @@ export function ChoreCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className="font-medium text-ink">{chore.name}</span>
-            <span className="shrink-0 text-sm font-medium text-brass">+{chore.effortWeight} pts</span>
+            <span className="shrink-0 text-sm font-medium text-coral">+{chore.effortWeight} pts</span>
           </div>
           <p className="mt-0.5 text-sm text-ink/60">
             {assignment?.assigneeName ?? "Unassigned"}&apos;s turn
@@ -69,7 +69,7 @@ export function ChoreCard({
             type="button"
             onClick={onComplete}
             disabled={disabled || isAnimating || !assignment}
-            className="relative mt-3 w-full overflow-hidden rounded-2xl bg-brass px-3 py-2.5 text-sm font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-doorframe disabled:opacity-60"
+            className="relative mt-3 w-full overflow-hidden rounded-2xl bg-coral px-3 py-2.5 text-sm font-medium text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-doorframe disabled:opacity-60"
           >
             {isAnimating && !reducedMotion && (
               <span className="pointer-events-none absolute inset-x-0 -top-1 flex justify-center gap-1">

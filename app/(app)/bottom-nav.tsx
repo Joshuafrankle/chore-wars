@@ -71,7 +71,7 @@ export async function BottomNav() {
           key={tab.href}
           href={tab.href}
           aria-label={tab.label}
-          className={`flex flex-1 items-center justify-center py-3 text-ink/70 transition-colors hover:bg-hallway hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-inset ${
+          className={`flex flex-1 items-center justify-center py-3 text-ink/70 transition-colors hover:bg-hallway hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-inset ${
             index > 0 ? "border-l border-ink/10" : ""
           }`}
         >

@@ -19,13 +19,13 @@ export function JoinHouseholdForm() {
         required
         autoCapitalize="characters"
         placeholder="e.g. 7K4RXQ"
-        className="rounded-xl border border-ink/15 bg-doorframe px-4 py-3 uppercase text-ink outline-none placeholder:text-ink/40 placeholder:normal-case focus-visible:ring-2 focus-visible:ring-brass"
+        className="rounded-xl border border-ink/15 bg-doorframe px-4 py-3 uppercase text-ink outline-none placeholder:text-ink/40 placeholder:normal-case focus-visible:ring-2 focus-visible:ring-coral"
       />
       {state.error && <p className="text-sm text-overdue">{state.error}</p>}
       <button
         type="submit"
         disabled={pending}
-        className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
+        className="rounded-xl bg-coral px-5 py-3 font-medium text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway disabled:opacity-60"
       >
         {pending ? "Looking up…" : "Continue"}
       </button>

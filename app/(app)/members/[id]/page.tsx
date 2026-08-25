@@ -104,11 +104,11 @@ export default async function MemberProfilePage({
       </div>
 
       <div className="flex gap-3">
-        <div className="flex-1 rounded-2xl bg-doorframe p-5">
+        <div className="card-elevated flex-1 rounded-3xl bg-doorframe p-5">
           <p className="text-sm text-ink/60">Fairness score</p>
           <p className="font-display text-3xl font-semibold text-coral">{score}</p>
         </div>
-        <div className="flex-1 rounded-2xl bg-doorframe p-5">
+        <div className="card-elevated flex-1 rounded-3xl bg-doorframe p-5">
           <p className="text-sm text-ink/60">On-time streak</p>
           <p className="font-display text-3xl font-semibold text-spruce">
             {streak}
@@ -120,7 +120,7 @@ export default async function MemberProfilePage({
       <div>
         <h2 className="mb-3 font-display text-lg font-semibold text-ink">Recent completions</h2>
         {!completions?.length ? (
-          <p className="rounded-2xl bg-doorframe p-6 text-center text-ink/70">
+          <p className="card-elevated rounded-3xl bg-doorframe p-6 text-center text-ink/70">
             No chores completed yet.
           </p>
         ) : (

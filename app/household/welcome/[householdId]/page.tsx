@@ -17,7 +17,7 @@ export default async function WelcomePage({
       <main className="flex flex-1 flex-col items-center justify-center gap-4 bg-hallway px-6 text-center">
         <Link
           href="/"
-          className="rounded-xl bg-brass px-5 py-3 font-medium text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+          className="rounded-xl bg-coral px-5 py-3 font-medium text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
         >
           Go home
         </Link>
@@ -53,7 +53,7 @@ export default async function WelcomePage({
 
       <Link
         href="/"
-        className="w-full max-w-sm rounded-xl border border-ink/15 px-5 py-3 text-center font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+        className="w-full max-w-sm rounded-xl border border-ink/15 px-5 py-3 text-center font-medium text-ink transition-colors hover:bg-doorframe focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
       >
         Continue to home
       </Link>
