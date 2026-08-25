@@ -1,8 +1,22 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
+import { SignOutDialog } from "../(app)/sign-out-dialog";
+
+async function signOut() {
+  "use server";
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/login");
+}
 
 export default function HouseholdChoicePage() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-6 bg-hallway px-6">
+    <main className="relative flex flex-1 flex-col items-center justify-center gap-6 bg-hallway px-6">
+      <div className="absolute right-6 top-6">
+        <SignOutDialog signOutAction={signOut} />
+      </div>
+
       <div className="w-full max-w-sm text-center">
         <h1 className="font-display text-3xl font-semibold tracking-tight text-ink">
           Get started

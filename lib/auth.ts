@@ -40,3 +40,25 @@ export async function requireHouseholdMemberApi() {
 
   return { supabase, user, householdId: profile.household_id as string };
 }
+
+// households has a permissive "readable by any signed-in user" RLS policy
+// (needed so the join-by-code flow can look one up before joining), so
+// unlike the tenant checks above, RLS alone won't stop a random user from
+// opening another owner's house page — this explicitly checks ownership.
+export async function requireHouseholdOwner(householdId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: household } = await supabase
+    .from("households")
+    .select("id, name, invite_code, room_count, whatsapp_link, owner_id")
+    .eq("id", householdId)
+    .maybeSingle();
+
+  if (!household || household.owner_id !== user.id) redirect("/");
+
+  return { supabase, user, household };
+}
