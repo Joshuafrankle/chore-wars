@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { initials } from "@/lib/avatar";
 import { SignOutDialog } from "./sign-out-dialog";
+import { ThemeToggle } from "./theme-toggle";
 
 async function signOut() {
   "use server";
@@ -38,7 +39,7 @@ export async function Header() {
     <header className="flex items-center justify-between px-6 py-4">
       <div className="flex min-w-0 items-center gap-2">
         <span
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brass font-display text-xs font-bold text-doorframe"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-coral font-display text-xs font-bold text-doorframe"
           aria-hidden="true"
         >
           CW
@@ -47,11 +48,12 @@ export async function Header() {
       </div>
 
       <div className="flex shrink-0 items-center gap-2">
+        <ThemeToggle />
         {profile?.household_id && (
           <Link
             href={`/members/${user.id}`}
             aria-label="Your profile"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-brass font-display text-xs font-semibold text-doorframe transition-colors hover:bg-brass/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brass focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-coral font-display text-xs font-semibold text-doorframe transition-colors hover:bg-coral/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral focus-visible:ring-offset-2 focus-visible:ring-offset-hallway"
           >
             {initials(profile.display_name)}
           </Link>
