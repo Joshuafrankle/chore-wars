@@ -5,10 +5,10 @@ import { requireHouseholdOwner } from "@/lib/auth";
 
 export type ActionState = { error?: string };
 
-// Bathroom count isn't editable here — bathrooms are individual labeled
-// rows tenants are already assigned to, so shrinking/renaming them safely
-// needs its own reassignment flow. Name, room count, and the WhatsApp link
-// are plain fields with no such dependency.
+// Bathrooms aren't a plain count here — they're individual labeled rows
+// tenants get assigned to, each with its own chore history — so they get
+// their own add/remove actions below instead of a number field on this
+// form. Name, room count, and the WhatsApp link have no such dependency.
 export async function updateHousehold(
   _prevState: ActionState | undefined,
   formData: FormData,
@@ -71,4 +71,58 @@ export async function deleteHousehold(
   if (error) return { error: "Couldn't delete the house. Try again." };
 
   redirect("/");
+}
+
+export async function addBathroom(
+  _prevState: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const householdId = formData.get("householdId") as string;
+  const { supabase, household } = await requireHouseholdOwner(householdId);
+
+  const { count } = await supabase
+    .from("bathrooms")
+    .select("id", { count: "exact", head: true })
+    .eq("household_id", household.id);
+
+  const { error } = await supabase
+    .from("bathrooms")
+    .insert({ household_id: household.id, label: `Bathroom ${(count ?? 0) + 1}` });
+
+  if (error) return { error: "Couldn't add a bathroom. Try again." };
+
+  redirect(`/houses/${household.id}`);
+}
+
+// Deleting an empty bathroom also removes its auto-provisioned chore and
+// that chore's completion history (chores.bathroom_id and
+// chore_completions.chore_id both cascade) — acceptable since nobody was
+// ever assigned to it; the tenant-occupied check below is what actually
+// matters for safety.
+export async function removeBathroom(
+  _prevState: ActionState | undefined,
+  formData: FormData,
+): Promise<ActionState> {
+  const householdId = formData.get("householdId") as string;
+  const bathroomId = formData.get("bathroomId") as string;
+  const { supabase, household } = await requireHouseholdOwner(householdId);
+
+  const { count } = await supabase
+    .from("profiles")
+    .select("id", { count: "exact", head: true })
+    .eq("bathroom_id", bathroomId);
+
+  if ((count ?? 0) > 0) {
+    return { error: "Someone's still assigned to that bathroom — move them first." };
+  }
+
+  const { error } = await supabase
+    .from("bathrooms")
+    .delete()
+    .eq("id", bathroomId)
+    .eq("household_id", household.id);
+
+  if (error) return { error: "Couldn't remove that bathroom. Try again." };
+
+  redirect(`/houses/${household.id}`);
 }

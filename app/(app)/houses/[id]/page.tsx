@@ -5,11 +5,13 @@ import { computeStreak } from "@/lib/streaks";
 import { initials } from "@/lib/avatar";
 import { EditHouseForm } from "./edit-house-form";
 import { DeleteHouseButton } from "./delete-house-button";
+import { BathroomsManager } from "./bathrooms-manager";
 
 type TenantRow = {
   id: string;
   display_name: string;
   room_number: number | null;
+  bathroom_id: string | null;
   bathroom: { label: string } | null;
 };
 
@@ -17,10 +19,10 @@ export default async function HouseDetailPage({ params }: { params: Promise<{ id
   const { id } = await params;
   const { supabase, household } = await requireHouseholdOwner(id);
 
-  const [{ data: tenants }, { data: completions }] = await Promise.all([
+  const [{ data: tenants }, { data: completions }, { data: bathrooms }] = await Promise.all([
     supabase
       .from("profiles")
-      .select("id, display_name, room_number, bathroom:bathrooms(label)")
+      .select("id, display_name, room_number, bathroom_id, bathroom:bathrooms(label)")
       .eq("household_id", household.id)
       .order("room_number")
       .returns<TenantRow[]>(),
@@ -31,6 +33,7 @@ export default async function HouseDetailPage({ params }: { params: Promise<{ id
       .returns<
         { user_id: string; effort_awarded: number; completed_at: string; chore_assignments: { due_date: string } | null }[]
       >(),
+    supabase.from("bathrooms").select("id, label").eq("household_id", household.id).order("label"),
   ]);
 
   const scores = computeFairnessScores(
@@ -38,6 +41,10 @@ export default async function HouseDetailPage({ params }: { params: Promise<{ id
     (tenants ?? []).map((t) => t.id),
   );
   const totalPoints = (completions ?? []).reduce((sum, c) => sum + c.effort_awarded, 0);
+  const bathroomsWithCounts = (bathrooms ?? []).map((bathroom) => ({
+    ...bathroom,
+    occupantCount: (tenants ?? []).filter((t) => t.bathroom_id === bathroom.id).length,
+  }));
 
   return (
     <main className="flex flex-1 flex-col gap-6 bg-hallway px-6 py-10">
@@ -117,6 +124,13 @@ export default async function HouseDetailPage({ params }: { params: Promise<{ id
         <h2 className="mb-3 font-display text-lg font-semibold text-ink">House settings</h2>
         <div className="card-elevated rounded-3xl bg-doorframe p-5">
           <EditHouseForm household={household} />
+        </div>
+      </div>
+
+      <div>
+        <h2 className="mb-3 font-display text-lg font-semibold text-ink">Bathrooms</h2>
+        <div className="card-elevated rounded-3xl bg-doorframe p-5">
+          <BathroomsManager householdId={household.id} bathrooms={bathroomsWithCounts} />
         </div>
       </div>
 
