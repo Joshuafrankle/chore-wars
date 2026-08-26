@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chore Wars
 
-## Getting Started
+A mobile-first web app for shared houses (HMOs, student houses) that splits chores fairly. Instead of a fixed rota, an owner sets up a house (rooms, bathrooms), tenants join with an invite code, and every chore is automatically handed to whoever's contributed the least effort so far — self-correcting if someone's away, without anyone having to manually assign or nag.
 
-First, run the development server:
+## Tech stack
+
+- **Next.js 16** (App Router) + **TypeScript**
+- **Supabase** — Postgres, Auth (magic-link sign-in), Row-Level Security for multi-tenant data isolation
+- **TanStack Query** — client-side data fetching/caching for the interactive chore-completion flow
+- **Framer Motion** — the completion animation, leaderboard/insights bars, dialogs
+- **Tailwind CSS v4** — custom design tokens, no UI framework
+- **Vitest** — unit tests for the fairness-scoring and streak logic (`lib/fairness.ts`, `lib/streaks.ts`)
+
+## Getting started
+
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Set up Supabase
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+You need a Supabase project ([supabase.com](https://supabase.com), free tier is fine).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy `.env.local.example` to `.env.local` and fill in your project's URL and publishable key (Supabase dashboard → **Project Settings → API**):
 
-## Learn More
+```bash
+cp .env.local.example .env.local
+```
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run the database migrations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+In the Supabase SQL editor, run every file in `supabase/migrations/` **in order**:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+0001_init.sql                    — households, profiles, chores, bills schema + RLS
+0002_household_member_count.sql  — helper function for the join flow
+0003_backfill_profiles.sql       — one-time fix for any pre-existing accounts missing a profile row
+0004_owner_tenant_model.sql      — owner/tenant roles, bathroom groups, RLS rework
+0005_rooms_and_whatsapp.sql      — room numbers, WhatsApp group link
+```
 
-## Deploy on Vercel
+### 4. Set up email sending (optional for local dev)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Supabase's built-in email sender has a very low rate limit and is only meant for light testing. For anything beyond a handful of sign-ins, configure custom SMTP: **Supabase Dashboard → Authentication → Emails → SMTP Settings**, using a provider like [Resend](https://resend.com). If you use a domain-verified sender, also add a DMARC DNS record (`_dmarc.yourdomain.com`) — without one, mail can land in spam even when correctly authenticated.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 5. Run it
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+## Other commands
+
+```bash
+pnpm build   # production build
+pnpm test    # run the unit tests (fairness engine, streaks)
+pnpm lint    # eslint
+```
+
+## Project structure (high level)
+
+- `app/(app)/` — the authenticated app shell (chores, tenants, insights, house management), sharing one layout with the header and bottom nav
+- `app/household/`, `app/login/`, `app/auth/` — pre-authentication and household setup/onboarding flows, deliberately outside the `(app)` shell
+- `app/api/chores/` — the two endpoints backing the interactive chore-completion flow (list + complete)
+- `lib/fairness.ts`, `lib/streaks.ts` — pure, unit-tested business logic with no database or network calls
+- `lib/chores.ts`, `lib/chores-data.ts` — the database-touching layer that feeds plain data into the pure logic above
+- `supabase/migrations/` — the full schema history, run in order on a fresh project
